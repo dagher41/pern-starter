@@ -3,6 +3,7 @@ import compression from 'compression';
 // import mongoose from 'mongoose';
 import db from './models/index'
 import bodyParser from 'body-parser';
+import morgan from 'morgan';
 import path from 'path';
 import IntlWrapper from '../client/modules/Intl/IntlWrapper';
 
@@ -68,6 +69,7 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 // Apply body Parser and server public assets and routes
+app.use(morgan('combined'))
 app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
