@@ -89,6 +89,7 @@
     "nodemon": "^1.9.2",
     "null-loader": "^0.1.1",
     "nyc": "^6.4.4",
+    "passport-facebook": "^2.1.1",
     "pg": "^7.7.1",
     "postcss-cssnext": "^2.6.0",
     "postcss-focus": "^1.0.0",
