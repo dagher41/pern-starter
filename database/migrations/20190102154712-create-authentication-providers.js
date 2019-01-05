@@ -1,7 +1,7 @@
-'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('user_roles', {
+    return queryInterface.createTable('authentication_providers', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -18,15 +18,16 @@ module.exports = {
         },
         field: 'user_id'
       },
-      roleCode: {
+      authorizationToken: {
+        type: Sequelize.TEXT,
+        field: 'authorization_token'
+      },
+      payload: {
+        type: Sequelize.JSONB
+      },
+      name: {
         type: Sequelize.STRING,
-        allowNull: false,
-        foreignKey: true,
-        references: {
-          model: 'roles',
-          key: 'code'
-        },
-        field: 'role_code'
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -40,14 +41,15 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP(3)'),
         field: 'updated_at'
       }
-    }).then(() => {
-      return queryInterface.addIndex('user_roles', ['user_id']);
+    })
+    .then(() => {
+      return queryInterface.addIndex('authentication_providers', ['user_id']);
     });
   },
   down: (queryInterface) => {
     return Promise.all([
-      queryInterface.dropTable('user_roles'),
-      queryInterface.removeIndex('user_roles', ['user_id'])
+      queryInterface.dropTable('authentication_providers'),
+      queryInterface.removeIndex('authentication_providers', ['user_id'])
     ]);
   }
 };

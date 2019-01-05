@@ -1,4 +1,4 @@
-'use strict';
+
 module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.createTable('users', {
@@ -12,44 +12,66 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      encrypted_password: {
-        type: Sequelize.STRING
+      encryptedPassword: {
+        type: Sequelize.STRING,
+        field: 'encrypted_password'
       },
-      reset_password_token: {
-        type: Sequelize.STRING
+      resetPasswordToken: {
+        type: Sequelize.STRING,
+        field: 'reset_password_token'
       },
-      reset_password_sent_at: {
-        type: Sequelize.DATE
+      resetPasswordSentAt: {
+        type: Sequelize.DATE,
+        field: 'reset_password_sent_at'
       },
-      remember_created_at: {
-        type: Sequelize.DATE
+      rememberCreatedAt: {
+        type: Sequelize.DATE,
+        field: 'remember_created_at'
       },
-      sign_in_count: {
-        type: Sequelize.INTEGER
+      signInCount: {
+        type: Sequelize.INTEGER,
+        field: 'sign_in_count',
+        defaultValue: 0
       },
-      current_sign_in_at: {
-        type: Sequelize.DATE
+      currentSignInAt: {
+        type: Sequelize.DATE,
+        field: 'current_sign_in_at'
       },
-      fname: {
-        type: Sequelize.STRING
+      firstName: {
+        type: Sequelize.STRING,
+        field: 'first_name'
       },
-      lname: {
-        type: Sequelize.STRING
+      lastName: {
+        type: Sequelize.STRING,
+        field: 'last_name'
       },
       disabled: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
+        defaultValue: false
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE(3),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP(3)'),
+        field: 'created_at'
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE(3),
+        defaultValue: Sequelize.literal('CURRENT_TIMESTAMP(3)'),
+        field: 'updated_at'
       }
+    }).then(() => {
+      return queryInterface.addIndex('users', ['email'], {
+        type: 'UNIQUE',
+        unique: true
+      });
     });
   },
-  down: (queryInterface, Sequelize) => {
-    return queryInterface.dropTable('Users');
+  down: (queryInterface) => {
+    return Promise.all([
+      queryInterface.dropTable('Users'),
+      queryInterface.removeIndex('users', ['email'])
+    ]);
   }
 };

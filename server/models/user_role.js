@@ -1,11 +1,22 @@
-'use strict';
 module.exports = (sequelize, DataTypes) => {
-  const user_roles = sequelize.define('UserRole', {
-    user_id: DataTypes.INTEGER
-  }, {});
-  user_roles.associate = function(models) {
-    user_roles.belongsTo(models.User)
-    user_roles.belongsTo(models.Role)
+  const UserRole = sequelize.define('UserRole', {
+    userId: {
+      type: DataTypes.INTEGER,
+      field: 'user_id'
+    },
+    roleCode: {
+      type: DataTypes.STRING,
+      field: 'role_code'
+    }
+  }, {
+    timestamps: true,
+    freezeTableName: true,
+    underscored: true,
+    tableName: 'user_roles'
+  });
+  UserRole.associate = models => {
+    UserRole.belongsTo(models.User);
+    UserRole.belongsTo(models.Role);
   };
-  return user_roles;
+  return UserRole;
 };

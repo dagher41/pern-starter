@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('user_roles', {
+    return queryInterface.createTable('user_images', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -18,15 +18,12 @@ module.exports = {
         },
         field: 'user_id'
       },
-      roleCode: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        foreignKey: true,
-        references: {
-          model: 'roles',
-          key: 'code'
-        },
-        field: 'role_code'
+      url: {
+        type: Sequelize.TEXT
+      },
+      status: {
+        type: Sequelize.INTEGER,
+        defaultValue: 1
       },
       createdAt: {
         allowNull: false,
@@ -40,14 +37,12 @@ module.exports = {
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP(3)'),
         field: 'updated_at'
       }
-    }).then(() => {
-      return queryInterface.addIndex('user_roles', ['user_id']);
-    });
+    }).then(() => queryInterface.addIndex('user_images', ['user_id']));
   },
   down: (queryInterface) => {
     return Promise.all([
-      queryInterface.dropTable('user_roles'),
-      queryInterface.removeIndex('user_roles', ['user_id'])
+      queryInterface.dropTable('UserImages'),
+      queryInterface.removeIndex('user_images', ['user_id'])
     ]);
   }
 };

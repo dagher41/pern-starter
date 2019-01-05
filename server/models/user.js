@@ -1,19 +1,59 @@
-'use strict';
+
 module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('User', {
-    email: DataTypes.STRING,
-    encrypted_password: DataTypes.STRING,
-    reset_password_token: DataTypes.STRING,
-    reset_password_sent_at: DataTypes.DATE,
-    remember_created_at: DataTypes.DATE,
-    sign_in_count: DataTypes.INTEGER,
-    current_sign_in_at: DataTypes.DATE,
-    fname: DataTypes.STRING,
-    lname: DataTypes.STRING,
-    disabled: DataTypes.BOOLEAN
-  }, {});
-  User.associate = function(models) {
-    // associations can be defined here
+    email: {
+      allowNull: false,
+      type: DataTypes.STRING
+    },
+    encryptedPassword: {
+      type: DataTypes.STRING,
+      field: 'encrypted_password'
+    },
+    resetPasswordToken: {
+      type: DataTypes.STRING,
+      field: 'reset_password_token'
+    },
+    resetPasswordSentAt: {
+      type: DataTypes.DATE,
+      field: 'reset_password_sent_at'
+    },
+    rememberCreatedAt: {
+      type: DataTypes.DATE,
+      field: 'remember_created_at'
+    },
+    signInCount: {
+      type: DataTypes.INTEGER,
+      field: 'sign_in_count',
+      defaultValue: 0
+    },
+    currentSignInAt: {
+      type: DataTypes.DATE,
+      field: 'current_sign_in_at'
+    },
+    firstName: {
+      type: DataTypes.STRING,
+      field: 'first_name'
+    },
+    lastName: {
+      type: DataTypes.STRING,
+      field: 'last_name'
+    },
+    disabled: {
+      type: DataTypes.BOOLEAN,
+      default: false
+    }
+  }, {
+    timestamps: true,
+    freezeTableName: true,
+    underscored: true,
+    tableName: 'users'
+  });
+  User.associate = models => {
+    User.hasMany(models.UserRole, { foreignKey: 'user_id' });
+    User.belongsToMany(models.Role, { through: models.UserRole, foreignKey: 'user_id' });
+    User.hasMany(models.AuthenticationProvider, { foreignKey: 'user_id' });
+    User.hasMany(models.AccessToken, { foreignKey: 'user_id' });
+    User.hasMany(models.UserImage, { foreignKey: 'user_id' });
   };
   return User;
 };

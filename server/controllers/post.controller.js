@@ -3,7 +3,7 @@ import cuid from 'cuid';
 import slug from 'limax';
 import sanitizeHtml from 'sanitize-html';
 
-const {Post} = db
+const { Post } = db;
 
 /**
  * Get all posts
@@ -13,12 +13,12 @@ const {Post} = db
  */
 export function getPosts(req, res) {
   Post.findAll()
-  .then(function(posts, err) {
-    if (err) {
-      res.status(500).send(err);
-    }
-    res.json({ posts });
-  })
+    .then((posts, err) => {
+      if (err) {
+        res.status(500).send(err);
+      }
+      res.json({ posts });
+    });
 }
 
 /**
@@ -33,19 +33,20 @@ export function addPost(req, res) {
   }
 
   Post.create(req.body.post)
-  .then((newPost, err) => {
-    // Let's sanitize inputs
-    newPost.title = sanitizeHtml(newPost.title);
-    newPost.name = sanitizeHtml(newPost.name);
-    newPost.content = sanitizeHtml(newPost.content);
+    .then((post, err) => {
+      // Let's sanitize inputs
+      const newPost = post;
+      newPost.title = sanitizeHtml(newPost.title);
+      newPost.name = sanitizeHtml(newPost.name);
+      newPost.content = sanitizeHtml(newPost.content);
 
-    newPost.slug = slug(newPost.title.toLowerCase(), { lowercase: true });
-    newPost.cuid = cuid();
-    return newPost.save();
-  })
-  .then(post => {
-      res.json({ post: post });
-  });
+      newPost.slug = slug(newPost.title.toLowerCase(), { lowercase: true });
+      newPost.cuid = cuid();
+      return newPost.save();
+    })
+    .then(post => {
+      res.json({ post });
+    });
 }
 
 /**
@@ -56,12 +57,12 @@ export function addPost(req, res) {
  */
 export function getPost(req, res) {
   Post.findOne({ cuid: req.params.cuid })
-  .then((post, err) => {
-    if (err) {
-      res.status(500).send(err);
-    }
-    res.json({ post });
-  });
+    .then((post, err) => {
+      if (err) {
+        res.status(500).send(err);
+      }
+      res.json({ post });
+    });
 }
 
 /**
@@ -72,14 +73,14 @@ export function getPost(req, res) {
  */
 export function deletePost(req, res) {
   Post.findOne({ cuid: req.params.cuid })
-  .then((post, err) => {
-    if (err) {
-      res.status(500).send(err);
-    }
+    .then((post, err) => {
+      if (err) {
+        res.status(500).send(err);
+      }
 
-    return post.destroy();
-  })
-  .then(() => {
-    res.status(200).end();
-  });
+      return post.destroy();
+    })
+    .then(() => {
+      res.status(200).end();
+    });
 }

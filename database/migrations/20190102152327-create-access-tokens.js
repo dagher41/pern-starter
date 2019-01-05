@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('user_roles', {
+    return queryInterface.createTable('access_tokens', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -18,15 +18,12 @@ module.exports = {
         },
         field: 'user_id'
       },
-      roleCode: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        foreignKey: true,
-        references: {
-          model: 'roles',
-          key: 'code'
-        },
-        field: 'role_code'
+      token: {
+        type: Sequelize.STRING
+      },
+      expiresAt: {
+        type: Sequelize.DATE,
+        field: 'expires_at'
       },
       createdAt: {
         allowNull: false,
@@ -41,13 +38,17 @@ module.exports = {
         field: 'updated_at'
       }
     }).then(() => {
-      return queryInterface.addIndex('user_roles', ['user_id']);
+      return Promise.all([
+        queryInterface.addIndex('access_tokens', ['user_id']),
+        queryInterface.addIndex('access_tokens', ['token'])
+      ]);
     });
   },
   down: (queryInterface) => {
     return Promise.all([
-      queryInterface.dropTable('user_roles'),
-      queryInterface.removeIndex('user_roles', ['user_id'])
+      queryInterface.dropTable('access_tokens'),
+      queryInterface.removeIndex('access_tokens', ['user_id']),
+      queryInterface.removeIndex('access_tokens', ['tokens'])
     ]);
   }
 };
