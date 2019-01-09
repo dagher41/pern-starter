@@ -26,6 +26,19 @@ import './strategies';
 // Initialize the Express App
 const app = new Express();
 
+app.use(Express.static(path.resolve(__dirname, '../dist/client')));
+app.use(require('express-session')({
+  resave: false,
+  saveUninitialized: false,
+  secret: serverConfig.secretKeyBase,
+  cookie: {
+    expires: new Date(Date.now() + (1000 * 60 * 60 * 60 * 24 * 365) /* 1 year */),
+    secure: serverConfig.secureConnection
+  }
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Set Development modes checks
 const isDevMode = process.env.NODE_ENV === 'development' || false;
 const isProdMode = process.env.NODE_ENV === 'production' || false;
@@ -57,10 +70,6 @@ app.use(morgan('dev'));
 app.use(compression());
 app.use(bodyParser.json({ limit: '20mb' }));
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }));
-app.use(Express.static(path.resolve(__dirname, '../dist/client')));
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 
 app.use('/api', posts, userRoutes);
@@ -92,7 +101,7 @@ const renderFullPage = (html, initialState) => {
         <script>
           window.__INITIAL_STATE__ = ${JSON.stringify(initialState)};
           ${isProdMode ?
-          `//<![CDATA[
+      `//<![CDATA[
           window.webpackManifest = ${JSON.stringify(chunkManifest)};
           //]]>` : ''}
         </script>

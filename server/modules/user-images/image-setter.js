@@ -1,7 +1,5 @@
-import db from '../../../models';
-
+import db from '../../models';
 const { UserImage } = db;
-
 export default class UserImageSetter {
 
   setImagesForUser(user, imageUrls) {

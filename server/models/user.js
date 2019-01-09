@@ -42,18 +42,29 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       default: false
     }
-  }, {
-    timestamps: true,
-    freezeTableName: true,
-    underscored: true,
-    tableName: 'users'
-  });
+  },
+    {
+      timestamps: true,
+      freezeTableName: true,
+      underscored: true,
+      tableName: 'users'
+    });
+
   User.associate = models => {
     User.hasMany(models.UserRole, { foreignKey: 'user_id' });
     User.belongsToMany(models.Role, { through: models.UserRole, foreignKey: 'user_id' });
     User.hasMany(models.AuthenticationProvider, { foreignKey: 'user_id' });
-    User.hasMany(models.AccessToken, { foreignKey: 'user_id' });
     User.hasMany(models.UserImage, { foreignKey: 'user_id' });
+    User.hasMany(models.UserImage, {
+      foreignKey: 'user_id',
+      scope: {
+        status: '1'
+      },
+      as: {
+        singular: 'activeImage',
+        plural: 'activeImages'
+      }
+    });
   };
   return User;
 };

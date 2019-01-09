@@ -1,5 +1,4 @@
-import db from '../../../models';
-
+import db from '../../models';
 const { AuthenticationProvider } = db;
 
 export default class AuthenticationProviderBuilder {

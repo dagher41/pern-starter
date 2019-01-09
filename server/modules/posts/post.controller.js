@@ -1,8 +1,7 @@
-import db from '../models';
+import db from '../../models';
 import cuid from 'cuid';
 import slug from 'limax';
 import sanitizeHtml from 'sanitize-html';
-
 const { Post } = db;
 
 /**

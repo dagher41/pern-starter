@@ -1,10 +1,10 @@
-const FacebookTokenStrategy = require('passport-facebook-token');
 const passport = require('passport');
+const FacebookTokenStrategy = require('passport-facebook-token');
 
-import FacebookAuthenticationInteractor from '../services/interactors/facebook-authentication-interactor';
+import FbAuthentication from '../modules/facebook-authentication/fb-authentication.interactor';
 
 passport.use(new FacebookTokenStrategy({
   clientID: process.env.FACEBOOK_APP_ID,
   clientSecret: process.env.FACEBOOK_APP_SECRET,
   enableProof: false
-}, FacebookAuthenticationInteractor.processResponse));
+}, FbAuthentication.processFacebookResponse));

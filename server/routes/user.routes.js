@@ -1,21 +1,24 @@
 import { Router } from 'express';
 import passport from 'passport';
+const ensureLoggedIn = require('connect-ensure-login').ensureLoggedIn;
 
-import * as UserController from '../controllers/user.controller';
+import * as UserController from '../modules/facebook-authentication/fb-authentication.controller';
 const router = new Router();
 
-// Add a new Post
-router.route('/user/facebook-token-authentication').post(passport.authenticate('facebook-token'), UserController.facebookTokenAuthentication);
+router
+  .post(
+    '/user/facebook-token-authentication',
+    passport.authenticate('facebook-token'),
+    UserController.facebookTokenAuthentication
+  )
+  .get(
+    '/user/profile',
+    ensureLoggedIn('/login'),
+    UserController.userProfile
+  );
 
-router.route('/user/test').post((req, res) => {
-  console.log(':::::::::::recieved request:::::::::::');
-
-  res.json({
-    success: true,
-    data: [{
-      yo: 'man'
-    }]
-  });
+router.use((err, _, res, next) => {
+  res.status(500).send('Something broke!');
 });
 
 export default router;
